@@ -36,7 +36,11 @@
                             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
                                 aria-labelledby="userDropdown">
                                 <a class="dropdown-item" href="#">
-                                  <div class="badge badge-success justify-content-center d-flex">
+                                          <div class="badge 
+            {{ auth()->user()->role == 'Superadmin' ? 'badge-success' : 'badge-secondary' }}
+            justify-content-center d-flex">
+
+
                                       {{ auth()->user()->role }}
                                   </div>
                                 </a>

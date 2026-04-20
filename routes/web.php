@@ -2,9 +2,12 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\UserController;
 use App\Http\Controllers\KaryawanController;
+use App\Http\Controllers\SlipController;
+use App\Http\Controllers\SlipHistoryController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
+
 
 Route::get('/', function () {
     return view('welcome');
@@ -30,6 +33,14 @@ Route::middleware('checkLogin')->group(function(){
     Route::get('karyawan/edit/{id}', [KaryawanController::class, 'edit'])->name('karyawanEdit');
     Route::post('karyawan/update/{id}', [KaryawanController::class, 'update'])->name('karyawanUpdate');
     Route::delete('karyawan/destroy/{id}', [KaryawanController::class, 'destroy'])->name('karyawanDestroy');
+
+    //slip gaji
+    Route::get('/kirim-slip', [SlipController::class, 'create'])->name('slipCreate');
+    Route::post('/kirim-slip/store', [SlipController::class, 'store'])->name('slipStore');
+    Route::post('/kirim-slip/preview', [SlipController::class, 'preview'])->name('slipPreview');
+    Route::get('/kirim-slip/preview', function () {return redirect()->route('slipCreate');});
+    Route::get('/slip/history', [SlipHistoryController::class, 'index'])
+    ->name('slipHistory');
 
 });
 

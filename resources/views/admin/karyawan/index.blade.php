@@ -4,14 +4,14 @@
 
 <!-- Page Heading -->
 <h1 class="h3 mb-4 text-gray-800">
-    <i class="fas fa-user mr-2"></i>
+    <i class="fas fa-users mr-2"></i>
     {{ $title }}
 </h1>
 
 <div class="card shadow mb-4">
 
     <div class="card-header py-3">
-        <a href="{{ route('userCreate') }}" class="btn btn-sm btn-primary">
+        <a href="{{ route('karyawanCreate') }}" class="btn btn-sm btn-primary">
             <i class="fas fa-plus mr-2"></i>
             Tambah Data
         </a>
@@ -26,8 +26,9 @@
                 <thead>
                     <tr class="text-center">
                         <th>No</th>
+                        <th>Nama</th>
                         <th>Email</th>
-                        <th>Role</th>
+                        <th>No Kode</th>
                         <th>
                             <i class="fas fa-cog"></i>
                         </th>
@@ -36,28 +37,17 @@
 
                 <tbody>
 
-                    @foreach ($user as $item)
-
+                    @foreach ($karyawan as $item)
                     <tr>
+
                         <td class="text-center">{{ $loop->iteration }}</td>
-
+                        <td>{{ $item->nama }}</td>
                         <td>{{ $item->email }}</td>
-
-                        <td class="text-center">
-                            @if ($item->role == 'Admin')
-                                <span class="badge badge-dark">
-                                    {{ $item->role }}
-                                </span>
-                            @else
-                                <span class="badge badge-success">
-                                    {{ $item->role }}
-                                </span>
-                            @endif
-                        </td>
+                        <td class="text-center">{{ $item->no_kode }}</td>
 
                         <td class="text-center">
 
-                            <a href="{{ route('userEdit', $item->id) }}" class="btn btn-sm btn-warning">
+                            <a href="{{ route('karyawanEdit', $item->id) }}" class="btn btn-sm btn-warning">
                                 <i class="fas fa-edit"></i>
                             </a>
 
@@ -67,11 +57,11 @@
                                 <i class="fas fa-trash"></i>
                             </button>
 
+                            @include('superadmin.karyawan.modal')
+
                         </td>
+
                     </tr>
-
-                    @include('superadmin.user.modal')
-
                     @endforeach
 
                 </tbody>

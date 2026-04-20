@@ -1,13 +1,20 @@
  <!-- Sidebar -->
          <ul class="navbar-nav bg-dark sidebar sidebar-dark accordion" id="accordionSidebar">
 
-            <!-- Sidebar - Brand -->
-            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
-                <div class="sidebar-brand-icon rotate-n-15">
-                    <i class=""></i>
-                </div>
-                <div class="sidebar-brand-text mx-3">E-Slip gaji Mitratani </div>
-            </a>
+           <!-- Sidebar - Brand -->
+<a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ route('dashboard') }}">
+    <div class="sidebar-brand-icon">
+        <img src="{{ asset('images/logo.png') }}"
+             width="70"
+             height="70"
+             class="img-fluid">
+    </div>
+
+    <div class="sidebar-brand-text mx-2">
+        E-Slip Gaji Mitratani
+    </div>
+
+</a>
 
             <!-- Divider -->
             <hr class="sidebar-divider my-0">
@@ -54,7 +61,7 @@
 
             <!-- Nav Item - Riwayat -->
             <li class="nav-item">
-                <a class="nav-link" href="charts.html">
+                <a class="nav-link" href="{{ route('slipHistory') }}">
                     <i class="fas fa-history"></i>
                     <span> Detail Riwayat</span></a>
             </li>

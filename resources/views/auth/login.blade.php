@@ -17,10 +17,44 @@
         href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
         rel="stylesheet">
     <link href="{{ asset('sbadmin2/css/sb-admin-2.min.css')}}" rel="stylesheet">
+<link href="{{ asset('sbadmin2/css/sb-admin-2.min.css')}}" rel="stylesheet">
+
+<style>
+html, body{
+    height: 100%;
+    margin: 0;
+}
+
+.bg-login{
+    position: relative;
+    min-height: 100vh;
+    overflow: hidden;
+}
+
+.bg-login::before{
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: url('{{ asset("images/bg-login.jpg") }}') no-repeat center center fixed;
+    background-size: cover;
+    filter: blur(6px);
+    transform: scale(1.05);
+    z-index: -2;
+}
+
+.bg-login::after{
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.25);
+    z-index: -1;
+}
+</style>
 
 </head>
+</head>
 
-<body class="bg-gradient-primary">
+<body class="bg-login">
 
     <div class="container">
 

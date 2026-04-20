@@ -19,7 +19,7 @@
                         <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
                             Total Users
                         </div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">2</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $totalUser }}</div>
                     </div>
                     <div class="col-auto">
                         <i class="fas fa-user fa-2x text-gray-300"></i>
@@ -38,7 +38,7 @@
                         <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
                             Total Karyawan
                         </div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">2</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $totalKaryawan }}</div>
                     </div>
                     <div class="col-auto">
                         <i class="fas fa-users fa-2x text-gray-300"></i>
