@@ -22,22 +22,22 @@
 
             <div class="row">
 
-            <div class="col-xl-6 mb-3">
-                <label>Nama :</label>
-                <input type="text" name="nama"
-               class="form-control @error('nama') is-invalid @enderror"
-               value="{{ $user->nama }}">
-                    
-                @error('nama')
-                <small class="text-danger">{{ $message }}</small>
-               @enderror
-              </div>
+                <div class="col-xl-6 mb-3">
+                    <label>Nama :</label>
+                    <input type="text" name="nama"
+                    class="form-control @error('nama') is-invalid @enderror"
+                    value="{{ old('nama', $user->nama) }}">
+
+                    @error('nama')
+                    <small class="text-danger">{{ $message }}</small>
+                    @enderror
+                </div>
 
                 <div class="col-xl-6 mb-3">
                     <label>Email :</label>
                     <input type="email" name="email"
                     class="form-control @error('email') is-invalid @enderror"
-                    value="{{  $user->email }}">
+                    value="{{ old('email', $user->email) }}">
 
                     @error('email')
                     <small class="text-danger">{{ $message }}</small>
@@ -57,26 +57,51 @@
                 <div class="col-xl-6 mb-3">
                     <label>Password Konfirmasi :</label>
                     <input type="password" name="password_confirmation"
-                    class="form-control @error('password') is-invalid @enderror">
+                    class="form-control">
                 </div>
 
-                <div class="col-xl-6 mb-3">
-                    <label>Role :</label>
-                    <select name="role"
-                    class="form-control @error('role') is-invalid @enderror">
+               <div class="col-xl-6 mb-3">
+    <label>Role :</label>
 
-                        <option disabled>Pilih Role</option>
-                        <option value="Superadmin"{{ $user->role == 'Superadmin' ?
-                        'selected' : "" }}>Superadmin</option>
-                        <option value="Admin" {{ $user->role == 'Admin' ?
-                        'selected' : "" }}>Admin</option>
+    <select name="role" id="role"
+    class="form-control @error('role') is-invalid @enderror">
 
-                    </select>
+        <option value="superadmin"
+        {{ old('role', $user->role) == 'superadmin' ? 'selected' : '' }}>
+            Superadmin
+        </option>
 
-                    @error('role')
-                    <small class="text-danger">{{ $message }}</small>
-                    @enderror
-                </div>
+        <option value="admin"
+        {{ old('role', $user->role) == 'admin' ? 'selected' : '' }}>
+            Admin
+        </option>
+
+    </select>
+</div>
+
+<div class="col-xl-6 mb-3" id="divisiBox">
+    <label>Divisi :</label>
+
+    <select name="divisi_id"
+    class="form-control @error('divisi_id') is-invalid @enderror">
+
+        <option value="">Pilih Divisi</option>
+
+        @foreach($divisi as $item)
+            <option value="{{ $item->id }}"
+            {{ old('divisi_id', $user->divisi_id) == $item->id ? 'selected' : '' }}>
+                {{ $item->nama_divisi }}
+            </option>
+        @endforeach
+
+    </select>
+
+    @error('divisi_id')
+    <small class="text-danger">{{ $message }}</small>
+    @enderror
+</div>
+
+              
 
                 <div class="col-12">
                     <button type="submit" class="btn btn-primary btn-sm">
@@ -91,5 +116,21 @@
     </div>
 
 </div>
+
+<script>
+function cekRole() {
+    let role = document.getElementById('role').value;
+    let divisi = document.getElementById('divisiBox');
+
+    if (role == 'Superadmin') {
+        divisi.style.display = 'none';
+    } else {
+        divisi.style.display = 'block';
+    }
+}
+
+document.getElementById('role').addEventListener('change', cekRole);
+cekRole();
+</script>
 
 @endsection

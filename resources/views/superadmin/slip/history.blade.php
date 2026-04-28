@@ -10,9 +10,53 @@
 
 <div class="card shadow mb-4">
 
-    
-
     <div class="card-body">
+
+        {{-- ================= FILTER DIVISI ================= --}}
+        <form method="GET" action="{{ route('slipHistory') }}" class="mb-3">
+
+<div class="row">
+
+    <div class="col-md-3">
+        <select name="divisi" class="form-control">
+            <option value="">-- Semua Divisi --</option>
+
+            @foreach($divisi as $d)
+                <option value="{{ $d->id }}"
+                    {{ request('divisi') == $d->id ? 'selected' : '' }}>
+                    {{ $d->nama_divisi }}
+                </option>
+            @endforeach
+        </select>
+    </div>
+
+    <div class="col-md-3">
+        <input type="date"
+               name="tanggal"
+               value="{{ request('tanggal') }}"
+               class="form-control">
+    </div>
+
+    <div class="col-md-4">
+
+        <button class="btn btn-primary">
+            Filter
+        </button>
+
+        <a href="{{ route('slipHistory') }}"
+           class="btn btn-secondary">
+            Reset
+        </a>
+
+        <a href="{{ route('slipHistoryExport') }}"
+           class="btn btn-success">
+              <i class="fas fa-file-excel"></i> Export Excel
+        </a>
+
+    </div>
+
+</div>
+</form>
 
         <div class="table-responsive">
 
@@ -23,6 +67,7 @@
                         <th>No</th>
                         <th>Nama</th>
                         <th>Email</th>
+                         <th>Divisi</th>
                         <th>File</th>
                         <th>Status</th>
                         <th>Tanggal</th>
@@ -37,6 +82,7 @@
                         <td class="text-center">{{ $loop->iteration }}</td>
                         <td>{{ $item->nama }}</td>
                         <td>{{ $item->email }}</td>
+                        <td class="text-center">{{ $item->divisi->nama_divisi ?? '-' }}</td>
                         <td>{{ $item->file }}</td>
 
                         <td class="text-center">

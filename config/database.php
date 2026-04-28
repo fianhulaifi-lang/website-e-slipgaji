@@ -114,6 +114,21 @@ return [
             // 'trust_server_certificate' => env('DB_TRUST_SERVER_CERTIFICATE', 'false'),
         ],
 
+        'db_induk' => [
+    'driver' => 'mysql',
+    'host' => env('DB_SECOND_HOST', '127.0.0.1'),
+    'port' => env('DB_SECOND_PORT', '3306'),
+    'database' => env('DB_SECOND_DATABASE', 'db_induk'),
+    'username' => env('DB_SECOND_USERNAME', 'root'),
+    'password' => env('DB_SECOND_PASSWORD', ''),
+    'charset' => 'utf8mb4',
+    'collation' => 'utf8mb4_unicode_ci',
+    'prefix' => '',
+    'prefix_indexes' => true,
+    'strict' => true,
+    'engine' => null,
+],
+
     ],
 
     /*

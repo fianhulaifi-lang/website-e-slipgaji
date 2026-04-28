@@ -44,7 +44,7 @@
                         <td>{{ $item->email }}</td>
 
                         <td class="text-center">
-                            @if ($item->role == 'Admin')
+                            @if ($item->role == 'admin')
                                 <span class="badge badge-dark">
                                     {{ $item->role }}
                                 </span>
@@ -54,7 +54,6 @@
                                 </span>
                             @endif
                         </td>
-
                         <td class="text-center">
 
                             <a href="{{ route('userEdit', $item->id) }}" class="btn btn-sm btn-warning">

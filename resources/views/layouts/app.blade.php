@@ -36,13 +36,20 @@
                             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
                                 aria-labelledby="userDropdown">
                                 <a class="dropdown-item" href="#">
-                                          <div class="badge 
-            {{ auth()->user()->role == 'Superadmin' ? 'badge-success' : 'badge-secondary' }}
-            justify-content-center d-flex">
 
+    @php
+        $role = strtolower(trim(auth()->user()->role));
+    @endphp
 
-                                      {{ auth()->user()->role }}
-                                  </div>
+    <div class="badge 
+        {{ $role == 'superadmin' ? 'badge-success' : 'badge-secondary' }}
+        justify-content-center d-flex">
+
+        {{ ucfirst($role) }}
+
+    </div>
+
+</a>
                                 </a>
                                 <a class="dropdown-item" href="#">
                                     <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
@@ -85,5 +92,9 @@
         <i class="fas fa-angle-up"></i>
     </a>
 
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0/dist/css/select2.min.css" rel="stylesheet" />
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0/dist/js/select2.min.js"></script>
 
 @include('layouts/footer')

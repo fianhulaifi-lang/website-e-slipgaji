@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\Karyawan;
+use App\Models\SlipHistory;
 
 class DashboardController extends Controller
 {
@@ -12,9 +13,14 @@ class DashboardController extends Controller
         $data = [
             'title' => 'Dashboard',
             'totalUser' => User::count(),
-            'totalKaryawan' => Karyawan::count()
+            'totalKaryawan' => Karyawan::count(),
+            'totalRiwayat' => SlipHistory::count()
         ];
 
-        return view('dashboard', $data);
+        if (auth()->user()->role == 'superadmin') {
+        return view('superadmin.dashboard', $data);
+        }
+
+        return view('admin.dashboard', $data);
     }
 }

@@ -7,37 +7,51 @@ use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
-    public function login(){
-        return view ('auth/login');
+    public function login()
+    {
+        return view('auth.login');
     }
-    public function loginProses(Request $request){
-    $request->validate([
-        'email' => 'required',
-        'password' => 'required|min:8',
-    ],[
-        'email.required'    => 'Email Tidak Boleh Kosong',
-        'password.required' => 'Password Tidak Boleh Kosong',
-        'password.min'      => 'Password Minimal 8 Karakter',
 
-    ]);
-       $data = array(
-        'email'    => $request->email,
-        'password' => $request->password,
+    public function loginProses(Request $request)
+    {
+        $request->validate([
+            'email' => 'required',
+            'password' => 'required|min:8',
+        ], [
+            'email.required' => 'Email Tidak Boleh Kosong',
+            'password.required' => 'Password Tidak Boleh Kosong',
+            'password.min' => 'Password Minimal 8 Karakter',
+        ]);
 
-       );
-       if(Auth::attempt($data)){
-        return redirect()->route('dashboard')->with('success','Anda Berhasil Login');
-      } else {
-        return redirect()->back()->with('error',
-        'Email atau Password Salah');
-      }
+        $data = [
+            'email' => $request->email,
+            'password' => $request->password,
+        ];
 
-      }
-      public function logout(){
+        if (Auth::attempt($data)) {
+
+            if (auth()->user()->role == 'superadmin') {
+                return redirect()->route('dashboard')
+                    ->with('success', 'Login sebagai Superadmin');
+            }
+
+            if (auth()->user()->role == 'admin') {
+                return redirect()->route('dashboard')
+                    ->with('success', 'Login sebagai Admin');
+            }
+
+            return redirect()->route('dashboard');
+        }
+
+        return redirect()->back()
+            ->with('error', 'Email atau Password Salah');
+    }
+
+    public function logout()
+    {
         Auth::logout();
 
-        return redirect()->route('login')->with('success','Anda Berhasil Logout');
-      }
-
-
+        return redirect()->route('login')
+            ->with('success', 'Anda Berhasil Logout');
     }
+}

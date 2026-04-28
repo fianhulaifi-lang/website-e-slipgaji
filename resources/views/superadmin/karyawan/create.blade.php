@@ -45,12 +45,80 @@
                 </div>
 
                 <div class="col-xl-6 mb-3">
-                    <label>No Kode :</label>
-                    <input type="text" name="no_kode"
-                        class="form-control @error('no_kode') is-invalid @enderror"
-                        value="{{ old('no_kode') }}">
+                    <label>NIK :</label>
+                    <input type="text" name="nik"
+                        class="form-control @error('nik') is-invalid @enderror"
+                        value="{{ old('nik') }}">
 
-                    @error('no_kode')
+                    @error('nik')
+                    <small class="text-danger">{{ $message }}</small>
+                    @enderror
+                </div>
+
+                <div class="col-xl-6 mb-3">
+                    <label>No HP :</label>
+                    <input type="text" name="no_hp"
+                        class="form-control @error('no_hp') is-invalid @enderror"
+                        value="{{ old('no_hp') }}">
+
+                    @error('no_hp')
+                    <small class="text-danger">{{ $message }}</small>
+                    @enderror
+                </div>
+
+                <!-- JABATAN -->
+<div class="col-xl-6 mb-3">
+    <label>Jabatan :</label>
+
+    <select name="jabatan_id"
+        class="form-control @error('jabatan_id') is-invalid @enderror">
+
+        <option value="">Pilih Jabatan</option>
+
+        @foreach ($jabatan as $j)
+            <option value="{{ $j->id }}"
+                {{ old('jabatan_id') == $j->id ? 'selected' : '' }}>
+                {{ $j->nama_jabatan }}
+            </option>
+        @endforeach
+
+    </select>
+
+    @error('jabatan_id')
+    <small class="text-danger">{{ $message }}</small>
+    @enderror
+</div>
+
+                <!-- DIVISI -->
+<div class="col-xl-6 mb-3">
+    <label>Divisi :</label>
+
+    <select name="divisi_id"
+        class="form-control @error('divisi_id') is-invalid @enderror">
+
+        <option value="">Pilih Divisi</option>
+
+        @foreach ($divisi as $d)
+            <option value="{{ $d->id }}"
+                {{ old('divisi_id') == $d->id ? 'selected' : '' }}>
+                {{ $d->nama_divisi }}
+            </option>
+        @endforeach
+
+    </select>
+
+    @error('divisi_id')
+    <small class="text-danger">{{ $message }}</small>
+    @enderror
+</div>
+
+                <div class="col-xl-12 mb-3">
+                    <label>Alamat :</label>
+
+                    <textarea name="alamat" rows="3"
+                        class="form-control @error('alamat') is-invalid @enderror">{{ old('alamat') }}</textarea>
+
+                    @error('alamat')
                     <small class="text-danger">{{ $message }}</small>
                     @enderror
                 </div>

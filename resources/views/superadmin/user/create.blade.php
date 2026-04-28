@@ -22,16 +22,16 @@
 
             <div class="row">
 
-            <div class="col-xl-6 mb-3">
-                <label>Nama :</label>
-                <input type="text" name="nama"
-               class="form-control @error('nama') is-invalid @enderror"
-               value="{{ old('nama') }}">
+                <div class="col-xl-6 mb-3">
+                    <label>Nama :</label>
+                    <input type="text" name="nama"
+                    class="form-control @error('nama') is-invalid @enderror"
+                    value="{{ old('nama') }}">
 
-                @error('nama')
-                <small class="text-danger">{{ $message }}</small>
-               @enderror
-              </div>
+                    @error('nama')
+                    <small class="text-danger">{{ $message }}</small>
+                    @enderror
+                </div>
 
                 <div class="col-xl-6 mb-3">
                     <label>Email :</label>
@@ -57,24 +57,55 @@
                 <div class="col-xl-6 mb-3">
                     <label>Password Konfirmasi :</label>
                     <input type="password" name="password_confirmation"
-                    class="form-control @error('password') is-invalid @enderror">
+                    class="form-control">
                 </div>
+<div class="col-xl-6 mb-3">
+    <label>Role :</label>
 
-                <div class="col-xl-6 mb-3">
-                    <label>Role :</label>
-                    <select name="role"
-                    class="form-control @error('role') is-invalid @enderror">
+    <select name="role" id="role"
+    class="form-control @error('role') is-invalid @enderror">
 
-                        <option selected disabled>Pilih Role</option>
-                        <option value="Superadmin">Superadmin</option>
-                        <option value="Admin">Admin</option>
+        <option value="">Pilih Role</option>
 
-                    </select>
+        <option value="superadmin"
+        {{ old('role') == 'superadmin' ? 'selected' : '' }}>
+            Superadmin
+        </option>
 
-                    @error('role')
-                    <small class="text-danger">{{ $message }}</small>
-                    @enderror
-                </div>
+        <option value="admin"
+        {{ old('role') == 'admin' ? 'selected' : '' }}>
+            Admin
+        </option>
+
+    </select>
+
+    @error('role')
+    <small class="text-danger">{{ $message }}</small>
+    @enderror
+</div>
+
+<div class="col-xl-6 mb-3" id="divisiBox">
+    <label>Divisi :</label>
+
+    <select name="divisi_id"
+    class="form-control @error('divisi_id') is-invalid @enderror">
+
+        <option value="">Pilih Divisi</option>
+
+        @foreach($divisi as $item)
+            <option value="{{ $item->id }}"
+            {{ old('divisi_id') == $item->id ? 'selected' : '' }}>
+                {{ $item->nama_divisi }}
+            </option>
+        @endforeach
+
+    </select>
+
+    @error('divisi_id')
+    <small class="text-danger">{{ $message }}</small>
+    @enderror
+</div>
+               
 
                 <div class="col-12">
                     <button type="submit" class="btn btn-primary btn-sm">
@@ -89,5 +120,23 @@
     </div>
 
 </div>
+
+<script>
+document.getElementById('role').addEventListener('change', function () {
+
+    let divisi = document.getElementById('divisiBox');
+
+    if (this.value == 'superadmin') {
+        divisi.style.display = 'none';
+    } else {
+        divisi.style.display = 'block';
+    }
+
+});
+
+window.onload = function () {
+    document.getElementById('role').dispatchEvent(new Event('change'));
+}
+</script>
 
 @endsection

@@ -27,13 +27,33 @@
             <div class="modal-body">
 
                 <div class="row mb-2">
+                    <div class="col-6">Nama</div>
+                    <div class="col-6">: {{ $item->nama }}</div>
+                </div>
+
+                <div class="row mb-2">
                     <div class="col-6">Email</div>
                     <div class="col-6">: {{ $item->email }}</div>
                 </div>
 
-                <div class="row">
+                <div class="row mb-2">
                     <div class="col-6">Role</div>
                     <div class="col-6">: {{ $item->role }}</div>
+                </div>
+
+                <div class="row">
+                    <div class="col-6">Divisi</div>
+                    <div class="col-6">:
+
+                        @if($item->role == 'Superadmin')
+                            Semua Divisi
+                        @elseif($item->divisi)
+                            {{ $item->divisi->nama_divisi }}
+                        @else
+                            -
+                        @endif
+
+                    </div>
                 </div>
 
             </div>
