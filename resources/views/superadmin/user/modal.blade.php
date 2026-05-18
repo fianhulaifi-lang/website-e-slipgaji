@@ -40,22 +40,6 @@
                     <div class="col-6">Role</div>
                     <div class="col-6">: {{ $item->role }}</div>
                 </div>
-
-                <div class="row">
-                    <div class="col-6">Divisi</div>
-                    <div class="col-6">:
-
-                        @if($item->role == 'Superadmin')
-                            Semua Divisi
-                        @elseif($item->divisi)
-                            {{ $item->divisi->nama_divisi }}
-                        @else
-                            -
-                        @endif
-
-                    </div>
-                </div>
-
             </div>
 
             <div class="modal-footer">

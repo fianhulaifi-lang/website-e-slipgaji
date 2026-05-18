@@ -11,8 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-      Schema::table('slip_histories', function (Blueprint $table) {
-    $table->unsignedBigInteger('divisi_id')->nullable()->after('email');
+       Schema::connection('db_induk')->create('jabatans', function (Blueprint $table) {
+    $table->id();
+    $table->string('nama_jabatan');
+    $table->timestamps();
 });
     }
 
@@ -21,8 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('slip_histories', function (Blueprint $table) {
-            //
-        });
+        Schema::dropIfExists('jabatans');
     }
 };

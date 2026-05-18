@@ -11,13 +11,43 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('karyawans', function (Blueprint $table) {
-            $table->id();
-            $table->string('nama');
-            $table->string('email')->unique();
-            $table->string('no_kode')->unique();
-            $table->timestamps();
-        });
+        Schema::connection('db_induk')->create('karyawans', function (Blueprint $table) {
+    $table->id();
+
+    // IDENTITAS
+    $table->string('nik')->unique();
+    $table->string('no_absen')->nullable();
+    $table->string('nama');
+    $table->string('nama_panggilan')->nullable();
+    $table->string('email')->nullable();
+    $table->string('no_hp')->nullable();
+    $table->string('no_ktp')->unique();
+
+    // RELASI
+    $table->foreignId('jabatan_id')->nullable()->constrained()->nullOnDelete();
+    $table->foreignId('divisi_id')->nullable()->constrained()->nullOnDelete();
+
+    // STATUS KARYAWAN
+    $table->string('status_pegawai')->nullable(); // tetap / kontrak
+    $table->string('status_aktif')->nullable();   // aktif / nonaktif
+    $table->string('golongan')->nullable();
+
+    // TANGGAL
+    $table->date('tanggal_masuk')->nullable();
+    $table->date('tanggal_pengangkatan')->nullable();
+    $table->date('tanggal_pensiun')->nullable();
+
+    // MASA KERJA & CUTI
+    $table->integer('masa_kerja')->nullable();
+    $table->integer('jatah_cuti')->nullable();
+    $table->integer('sisa_cuti')->nullable();
+
+    // TAMBAHAN (yang tadi sempat error duplicate)
+    $table->string('jenis_kelamin')->nullable();
+    $table->date('tanggal_lahir')->nullable();
+
+    $table->timestamps();
+});
     }
 
     /**

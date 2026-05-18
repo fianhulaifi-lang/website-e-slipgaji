@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-  Schema::create('slip_temps', function (Blueprint $table) {
+Schema::connection('mysql')->create('slip_temps', function (Blueprint $table) {
     $table->id();
     $table->string('nik');
     $table->string('file_slip');

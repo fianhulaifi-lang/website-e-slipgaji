@@ -10,7 +10,7 @@ class User extends Authenticatable
 {
     use Notifiable;
 
-    protected $connection = 'db_induk';
+    protected $connection = 'mysql'; // WAJIB
     protected $table = 'users';
 
     protected $fillable = [
@@ -18,7 +18,6 @@ class User extends Authenticatable
         'email',
         'password',
         'role',
-        'divisi'
     ];
 
     protected $hidden = [
@@ -27,8 +26,4 @@ class User extends Authenticatable
 
     public $timestamps = false;
 
-    public function divisi()
-    {
-        return $this->belongsTo(Divisi::class, 'divisi_id', 'id');
-    }
 }

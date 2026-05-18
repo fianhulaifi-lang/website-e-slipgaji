@@ -25,7 +25,6 @@ class UserController extends Controller
         $data = array(
             'title' => 'Tambah Data User',
             'menuSuperadminUser' => 'active',
-            'divisi' => Divisi::all()
         );
 
         return view('superadmin.user.create', $data);
@@ -37,7 +36,6 @@ class UserController extends Controller
             'nama' => 'required',
             'email' => 'required|unique:users,email',
             'role' => 'required',
-            'divisi_id' => 'required_unless:role,Superadmin',
             'password' => 'required|confirmed|min:8',
         ]);
 
@@ -45,7 +43,6 @@ class UserController extends Controller
         $user->nama = $request->nama;
         $user->email = $request->email;
         $user->role = $request->role;
-        $user->divisi_id = $request->divisi_id;
         $user->password = Hash::make($request->password);
         $user->save();
 
@@ -59,7 +56,6 @@ class UserController extends Controller
             'title' => 'Edit Data User',
             'menuSuperadminUser' => 'active',
             'user' => User::findOrFail($id),
-            'divisi' => Divisi::all()
         );
 
         return view('superadmin.user.edit', $data);
@@ -71,7 +67,6 @@ class UserController extends Controller
             'nama' => 'required',
             'email' => 'required|unique:users,email,' . $id,
             'role' => 'required',
-            'divisi_id' => 'required_unless:role,Superadmin',
             'password' => 'nullable|confirmed|min:8',
         ]);
 
@@ -79,7 +74,6 @@ class UserController extends Controller
         $user->nama = $request->nama;
         $user->email = $request->email;
         $user->role = $request->role;
-        $user->divisi_id = $request->divisi_id;
 
         if ($request->filled('password')) {
             $user->password = Hash::make($request->password);

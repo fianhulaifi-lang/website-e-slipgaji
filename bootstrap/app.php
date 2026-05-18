@@ -15,15 +15,12 @@ return Application::configure(basePath: dirname(__DIR__))
     )
 
     ->withMiddleware(function (Middleware $middleware) {
+    $middleware->alias([
+        'checkLogin' => \App\Http\Middleware\CheckLogin::class,
+        'role'       => \App\Http\Middleware\CheckRole::class,
+    ]);
+})
 
-        $middleware->alias([
-
-            'checkLogin' => CheckLogin::class,
-            'role'       => CheckRole::class,
-
-        ]);
-
-    })
 
     ->withExceptions(function (Exceptions $exceptions) {
         //

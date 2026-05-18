@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class SlipHistory extends Model
 {
+    protected $connection = 'mysql'; // WAJIB
     
     protected $fillable = [
         'nama',

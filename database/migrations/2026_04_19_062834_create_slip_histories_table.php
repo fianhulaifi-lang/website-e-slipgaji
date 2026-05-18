@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
 {
-    Schema::create('slip_histories', function (Blueprint $table) {
-        $table->id();
+   Schema::connection('mysql')->create('slip_histories', function (Blueprint $table) {
+    $table->id();
         $table->string('nama');
         $table->string('email');
         $table->string('file');

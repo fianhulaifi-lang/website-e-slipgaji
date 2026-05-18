@@ -84,27 +84,7 @@
     @enderror
 </div>
 
-<div class="col-xl-6 mb-3" id="divisiBox">
-    <label>Divisi :</label>
 
-    <select name="divisi_id"
-    class="form-control @error('divisi_id') is-invalid @enderror">
-
-        <option value="">Pilih Divisi</option>
-
-        @foreach($divisi as $item)
-            <option value="{{ $item->id }}"
-            {{ old('divisi_id') == $item->id ? 'selected' : '' }}>
-                {{ $item->nama_divisi }}
-            </option>
-        @endforeach
-
-    </select>
-
-    @error('divisi_id')
-    <small class="text-danger">{{ $message }}</small>
-    @enderror
-</div>
                
 
                 <div class="col-12">
@@ -121,22 +101,5 @@
 
 </div>
 
-<script>
-document.getElementById('role').addEventListener('change', function () {
-
-    let divisi = document.getElementById('divisiBox');
-
-    if (this.value == 'superadmin') {
-        divisi.style.display = 'none';
-    } else {
-        divisi.style.display = 'block';
-    }
-
-});
-
-window.onload = function () {
-    document.getElementById('role').dispatchEvent(new Event('change'));
-}
-</script>
 
 @endsection

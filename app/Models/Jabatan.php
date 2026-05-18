@@ -8,4 +8,8 @@ class Jabatan extends Model
 {
     protected $connection = 'db_induk';
     protected $table = 'jabatan';
+
+    protected $fillable = [
+        'nama_jabatan'
+    ];
 }

@@ -2,29 +2,17 @@
 
 namespace App\Exports;
 
-use App\Models\Karyawan;
-use Maatwebsite\Excel\Concerns\FromCollection;
+use Maatwebsite\Excel\Concerns\FromArray;
 use Maatwebsite\Excel\Concerns\WithHeadings;
-use Maatwebsite\Excel\Concerns\WithMapping;
+use Maatwebsite\Excel\Concerns\WithStyles;
+use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class KaryawanExport implements FromCollection, WithHeadings, WithMapping
+class KaryawanExport implements FromArray, WithHeadings, WithStyles
 {
-    public function collection()
+    // Hanya header, tidak ada data
+    public function array(): array
     {
-        return Karyawan::with('divisi', 'jabatan')->get();
-    }
-
-    public function map($karyawan): array
-    {
-        return [
-            $karyawan->nama,
-            $karyawan->email,
-            $karyawan->nik,
-            $karyawan->no_hp,
-            $karyawan->alamat,
-            $karyawan->jabatan->nama_jabatan ?? '-',
-            $karyawan->divisi->nama_divisi ?? '-',
-        ];
+        return [];
     }
 
     public function headings(): array
@@ -33,10 +21,27 @@ class KaryawanExport implements FromCollection, WithHeadings, WithMapping
             'Nama',
             'Email',
             'NIK',
+            'Jenis Kelamin',
+            'Tanggal Lahir',
             'No HP',
             'Alamat',
             'Jabatan',
             'Divisi',
         ];
+    }
+
+    public function styles(Worksheet $sheet)
+    {
+        $sheet->getStyle('A1:I1')->applyFromArray([
+            'font' => ['bold' => true, 'color' => ['argb' => 'FFFFFFFF']],
+            'fill' => [
+                'fillType'   => 'solid',
+                'startColor' => ['argb' => 'FF4472C4'],
+            ],
+        ]);
+
+        foreach (range('A', 'I') as $col) {
+            $sheet->getColumnDimension($col)->setAutoSize(true);
+        }
     }
 }

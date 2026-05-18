@@ -20,11 +20,11 @@
 
             <div class="form-group">
                 <label>Upload Slip</label>
-                <input type="file"
-                       name="file_slip[]"
-                       class="form-control"
-                       multiple
-                       required>
+              <input type="file"
+       name="file_slip[]"
+       multiple
+       class="form-control"
+       accept=".pdf,.png,.jpg,.jpeg">
             </div>
 
             {{-- tombol simpan --}}
@@ -45,5 +45,27 @@
 
     </div>
 </div>
+@if(session('popup_upload'))
 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+Swal.fire({
+    icon: '{{ count(session("gagal")) > 0 ? "warning" : "success" }}',
+    title: 'Upload Selesai',
+    html: `
+        <b>Berhasil:</b> {{ session('berhasil') }} file <br><br>
+
+        <b>Gagal:</b> {{ count(session('gagal')) }} file <br><br>
+
+        @if(count(session('gagal')) > 0)
+            <b>File Gagal:</b><br>
+            {!! implode('<br>', session('gagal')) !!}
+        @endif
+    `,
+    width: 600
+});
+</script>
+
+@endif
 @endsection

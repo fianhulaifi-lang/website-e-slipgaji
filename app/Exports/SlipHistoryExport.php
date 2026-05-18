@@ -8,9 +8,28 @@ use Maatwebsite\Excel\Concerns\WithHeadings;
 
 class SlipHistoryExport implements FromCollection, WithHeadings
 {
+    protected $tanggal;
+
+    public function __construct($tanggal = null)
+    {
+        $this->tanggal = $tanggal;
+    }
+
     public function collection()
     {
-        return SlipHistory::with('divisi')->get()->map(function ($item) {
+        $query = SlipHistory::with('divisi');
+
+        // FILTER BULAN
+        if ($this->tanggal) {
+
+            $tahun = substr($this->tanggal, 0, 4);
+            $bulan = substr($this->tanggal, 5, 2);
+
+            $query->whereYear('created_at', $tahun)
+                  ->whereMonth('created_at', $bulan);
+        }
+
+        return $query->get()->map(function ($item) {
             return [
                 'Nama'     => $item->nama,
                 'Email'    => $item->email,

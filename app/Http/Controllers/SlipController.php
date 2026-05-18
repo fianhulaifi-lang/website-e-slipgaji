@@ -29,91 +29,104 @@ class SlipController extends Controller
             'file_slip.*' => 'file|mimes:pdf,png,jpg,jpeg'
         ]);
 
+        $berhasil = 0;
+        $gagal = [];
+
         foreach ($request->file('file_slip') as $file) {
 
-           $nik = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+            $namaAsli = $file->getClientOriginalName();
+            $nik = pathinfo($namaAsli, PATHINFO_FILENAME);
 
-    // cek nik ada di tabel karyawan
-    $cek = Karyawan::where('nik', $nik)->first();
+            $cek = Karyawan::where('nik', $nik)->first();
 
-    if (!$cek) {
-        continue; // kalau nik tidak ada, skip
-    }
+            if (!$cek) {
+                $gagal[] = $namaAsli . ' (NIK tidak ditemukan)';
+                continue;
+            }
 
-    $date = now()->format('Y-m-d');
+            try {
 
-    $filename = $nik . '_' . time() . '.' . $file->getClientOriginalExtension();
+                $date = now()->format('Y-m-d');
 
-    $file->storeAs('slip', $filename, 'public');
+                $filename = $nik . '_' . now()->format('d_F_Y') . '.' . $file->getClientOriginalExtension();
 
-    SlipTemp::updateOrCreate(
-        [
-            'user_id' => Auth::id(),
-            'nik' => $nik
-        ],
-        [
-            'file_slip' => $filename,
-            'upload_date' => $date
-        ]
-    );
-}
+                $file->storeAs('slip', $filename, 'public');
 
-        // tombol simpan
-        if ($request->aksi == 'simpan') {
-            return back()->with('success', 'File berhasil disimpan');
+                SlipTemp::updateOrCreate(
+                    [
+                        'user_id' => Auth::id(),
+                        'nik' => $nik
+                    ],
+                    [
+                        'file_slip' => $filename,
+                        'upload_date' => $date
+                    ]
+                );
+
+                $berhasil++;
+
+            } catch (\Exception $e) {
+
+                $gagal[] = $namaAsli . ' (Gagal upload)';
+            }
         }
 
-        // tombol preview
+        if ($request->aksi == 'simpan') {
+
+            return back()->with([
+                'popup_upload' => true,
+                'berhasil' => $berhasil,
+                'gagal' => $gagal
+            ]);
+        }
+
         return redirect()->route('slipPreview');
     }
 
     // ================= PREVIEW =================
-   public function preview(Request $request)
-{
-    $temps = SlipTemp::where('user_id', Auth::id())->get();
+    public function preview(Request $request)
+    {
+        $temps = SlipTemp::where('user_id', Auth::id())->get();
 
-    $data = [];
+        $data = [];
 
-    foreach ($temps as $item) {
+        foreach ($temps as $item) {
 
-        $karyawan = Karyawan::with('divisi')
-            ->where('nik', $item->nik)
-            ->first();
+            $karyawan = Karyawan::with('divisi')
+                ->where('nik', $item->nik)
+                ->first();
 
-        if ($karyawan) {
-            $data[] = [
-                'nik'       => $item->nik,
-                'nama'      => $karyawan->nama,
-                'email'     => $karyawan->email,
-                'divisi_id' => $karyawan->divisi_id,
-                'divisi'    => $karyawan->divisi->nama_divisi ?? '-',
-                'file'      => $item->file_slip,
-                'date'      => $item->upload_date,
-            ];
+            if ($karyawan) {
+                $data[] = [
+                    'nik'       => $item->nik,
+                    'nama'      => $karyawan->nama,
+                    'email'     => $karyawan->email,
+                    'divisi_id' => $karyawan->divisi_id,
+                    'divisi'    => $karyawan->divisi->nama_divisi ?? '-',
+                    'file'      => $item->file_slip,
+                    'date'      => $item->upload_date,
+                ];
+            }
         }
-    }
 
-    // FILTER DIVISI
-    if ($request->divisi) {
-        $data = array_filter($data, function ($item) use ($request) {
-            return $item['divisi_id'] == $request->divisi;
-        });
-    }
-    
+        if ($request->divisi) {
+            $data = array_filter($data, function ($item) use ($request) {
+                return $item['divisi_id'] == $request->divisi;
+            });
+        }
 
-    // FILTER TANGGAL
-    if ($request->date) {
-        $data = array_filter($data, function ($item) use ($request) {
-            return $item['date'] == $request->date;
-        });
-    }
+        if ($request->date) {
+            $data = array_filter($data, function ($item) use ($request) {
+                return $item['date'] == $request->date;
+            });
+        }
 
-    return view('superadmin.slip.preview', [
-        'title'    => 'Preview Slip',
-        'dataSlip' => $data,
-        'divisi'   => Divisi::all()
-    ]);
-}
+        return view('superadmin.slip.preview', [
+            'title'    => 'Preview Slip',
+            'dataSlip' => $data,
+            'divisi'   => Divisi::all()
+        ]);
+    }
 
     // ================= KIRIM SATUAN =================
     public function store(Request $request)
@@ -123,10 +136,18 @@ class SlipController extends Controller
             'nama'         => 'required'
         ]);
 
+        // [FIX] Ambil karyawan berdasarkan NIK yang ada di SlipTemp milik user ini
         $temp = SlipTemp::where('user_id', Auth::id())->first();
 
         if (!$temp) {
             return back()->with('error', 'Data slip tidak ditemukan');
+        }
+
+        // [FIX] Definisikan $karyawan sebelum dipakai di SlipHistory::create()
+        $karyawan = Karyawan::where('nik', $temp->nik)->first();
+
+        if (!$karyawan) {
+            return back()->with('error', 'Karyawan tidak ditemukan');
         }
 
         try {
@@ -135,11 +156,11 @@ class SlipController extends Controller
                 ->send(new SlipMail('slip/' . $temp->file_slip));
 
             SlipHistory::create([
-                'nama'   => $request->nama,
-                'email'  => $request->email_tujuan,
-                'divisi_id' => $karyawan->divisi_id,
-                'file'   => $temp->file_slip,
-                'status' => 'terkirim'
+                'nama'      => $request->nama,
+                'email'     => $request->email_tujuan,
+                'divisi_id' => $karyawan->divisi_id, // [FIX] sekarang $karyawan sudah terdefinisi
+                'file'      => $temp->file_slip,
+                'status'    => 'terkirim'
             ]);
 
             SlipTemp::where('id', $temp->id)->delete();
@@ -149,7 +170,7 @@ class SlipController extends Controller
 
         } catch (\Exception $e) {
 
-            return back()->with('error', 'Gagal mengirim slip');
+            return back()->with('error', 'Gagal mengirim slip: ' . $e->getMessage());
         }
     }
 
@@ -164,20 +185,32 @@ class SlipController extends Controller
 
             if ($karyawan && $karyawan->email) {
 
-                Mail::to($karyawan->email)
-                    ->send(new SlipMail('slip/' . $item->file_slip));
+                try { // [FIX] Tambah try-catch agar 1 email gagal tidak menghentikan proses
 
-                SlipHistory::create([
-                    'nama'   => $karyawan->nama,
-                    'email'  => $karyawan->email,
-                    'divisi_id' => $karyawan->divisi_id,
-                    'file'   => $item->file_slip,
-                    'status' => 'terkirim'
-                ]);
+                    Mail::to($karyawan->email)
+                        ->send(new SlipMail('slip/' . $item->file_slip));
+
+                    SlipHistory::create([
+                        'nama'      => $karyawan->nama,
+                        'email'     => $karyawan->email,
+                        'divisi_id' => $karyawan->divisi_id,
+                        'file'      => $item->file_slip,
+                        'status'    => 'terkirim'
+                    ]);
+
+                } catch (\Exception $e) {
+
+                    SlipHistory::create([
+                        'nama'      => $karyawan->nama,
+                        'email'     => $karyawan->email,
+                        'divisi_id' => $karyawan->divisi_id,
+                        'file'      => $item->file_slip,
+                        'status'    => 'gagal'
+                    ]);
+                }
             }
         }
 
-        // hapus semua temp
         SlipTemp::where('user_id', Auth::id())->delete();
 
         return redirect()->route('slipCreate')
@@ -203,22 +236,34 @@ class SlipController extends Controller
                 $karyawan->divisi->nama_divisi == $request->divisi
             ) {
 
-                Mail::to($karyawan->email)
-                    ->send(new SlipMail('slip/' . $item->file_slip));
+                try {
 
-                SlipHistory::create([
-                    'nama'   => $karyawan->nama,
-                    'email'  => $karyawan->email,
-                    'divisi_id' => $karyawan->divisi_id,
-                    'file'   => $item->file_slip,
-                    'status' => 'terkirim'
-                ]);
+                    Mail::to($karyawan->email)
+                        ->send(new SlipMail('slip/' . $item->file_slip));
 
-                $nikTerkirim[] = $item->nik;
+                    SlipHistory::create([
+                        'nama'      => $karyawan->nama,
+                        'email'     => $karyawan->email,
+                        'divisi_id' => $karyawan->divisi_id,
+                        'file'      => $item->file_slip,
+                        'status'    => 'terkirim'
+                    ]);
+
+                    $nikTerkirim[] = $item->nik;
+
+                } catch (\Exception $e) {
+
+                    SlipHistory::create([
+                        'nama'      => $karyawan->nama,
+                        'email'     => $karyawan->email,
+                        'divisi_id' => $karyawan->divisi_id,
+                        'file'      => $item->file_slip,
+                        'status'    => 'gagal'
+                    ]);
+                }
             }
         }
 
-        // hapus hanya divisi yang terkirim
         SlipTemp::where('user_id', Auth::id())
             ->whereIn('nik', $nikTerkirim)
             ->delete();

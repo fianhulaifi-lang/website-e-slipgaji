@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class SlipTemp extends Model
 {
+    protected $connection = 'mysql'; // WAJIB
     protected $table = 'slip_temps';
 
     protected $fillable = [
